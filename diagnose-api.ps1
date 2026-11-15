@@ -12,8 +12,8 @@ $old = @'
 	return math.Round(float64(value)*10) / 10, nil
 '@
 $new = @'
-	if strings.HasPrefix(name, "bus[") && strings.HasSuffix(name, ".Gain") && (int32(res) != 0 || value == -60) {
-		log.Infof("[GAIN-API-DIAG] %s result=%d raw=%.1f", name, int32(res), value)
+	if len(name) >= 9 && name[:4] == "Bus[" && name[len(name)-5:] == ".Gain" && (int32(res) != 0 || value == -60) {
+		fmt.Printf("[GAIN-API-DIAG] %s result=%d raw=%.1f\n", name, int32(res), value)
 	}
 	if int32(res) != 0 {
 		err := fmt.Errorf("VBVMR_GetParameterFloat returned %d", int32(res))
