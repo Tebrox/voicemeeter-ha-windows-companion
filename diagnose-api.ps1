@@ -25,6 +25,7 @@ $replacement = @'
 	return math.Round(float64(value)*10) / 10, nil
 '@
 
-$content = [regex]::Replace($content, $pattern, [System.Text.RegularExpressions.MatchEvaluator]{ param($m) $replacement }, 1)
+$regex = [System.Text.RegularExpressions.Regex]::new($pattern)
+$content = $regex.Replace($content, [System.Text.RegularExpressions.MatchEvaluator]{ param($m) $replacement }, 1)
 [System.IO.File]::WriteAllText((Resolve-Path $path), $content, [System.Text.UTF8Encoding]::new($false))
 Write-Host 'API-Diagnosepatch angewendet.'
