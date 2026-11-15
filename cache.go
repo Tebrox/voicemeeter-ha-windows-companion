@@ -1,6 +1,10 @@
 package main
 
-import "github.com/onyx-and-iris/voicemeeter/v2"
+import (
+	"log"
+
+	"github.com/onyx-and-iris/voicemeeter/v2"
+)
 
 type stripCache struct {
 	label string
@@ -60,11 +64,16 @@ func snapshot(vm *voicemeeter.Remote) vmCache {
 
 	buses := make([]busCache, len(vm.Bus))
 	for i, b := range vm.Bus {
+		gain := b.Gain()
+		if gain == -60 {
+			secondRead := b.Gain()
+			log.Printf("[GAIN-DIAG] Bus %d returned -60.0 dB; immediate second read: %.1f dB", i, secondRead)
+		}
 		buses[i] = busCache{
 			label: b.Label(),
 			mute:  b.Mute(),
 			mono:  b.Mono(),
-			gain:  b.Gain(),
+			gain:  gain,
 			eq:    b.Eq().On(),
 		}
 	}
